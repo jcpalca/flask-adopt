@@ -1,6 +1,6 @@
 """Flask app for adopt app."""
 
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, flash
 
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -28,14 +28,14 @@ db.create_all()
 toolbar = DebugToolbarExtension(app)
 
 @app.get("/")
-def list_pets():
+def pet_list():
     """ Shows all pets and renders html """
     pets = Pet.query.all()
 
     return render_template("pet_list.html", pets=pets)
 
 @app.route("/add", methods=["GET", "POST"])
-def add_pet():
+def pet_add():
     """ Pet add form; handle adding """
 
     form = AddPetForm()
@@ -62,4 +62,26 @@ def add_pet():
     else:
         return render_template('pet_add_form.html', form=form)
 
+@app.route("/<int:pet_id>", methods=["GET", "POST"])
+def pet_display_edit(pet_id):
+    """
+    Display pet details
 
+    Pet edit form; handle editing
+    """
+
+    pet = Pet.query.get_or_404(pet_id)
+    form = EditPetForm(obj=pet)
+
+    if form.validate_on_submit():
+        pet.photo_url = form.photo_url.data
+        pet.notes = form.notes.data or None
+        pet.available = form.available.data
+
+        db.session.commit()
+
+        flash("Successfully edited")
+        return redirect(f'/{pet_id}')
+
+    else:
+        return render_template('pet_details_edit_form.html', form=form, pet=pet)
