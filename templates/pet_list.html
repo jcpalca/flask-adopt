@@ -6,19 +6,21 @@
 
 <div class="container mt-5">
   <div class="row">
-{% for pet in pets %}
-    <div class="col-4">
-      <a href="/{{ pet.id }}">
-        <img src="{{ pet.photo_url }}" alt="{{ pet.name }}"
-             class="img-thumbnail">
-      </a>
-      <p>
-        <a href="/{{ pet.id }}"
-           class="link-info text-decoration-none">{{ pet.name }}
-        </a>
-      <b>is {% if not pet.available %} not {% endif %} available!</b></p>
-    </div>
-{% endfor %}
+    {% for pet in pets %}
+        <div class="col-4">
+          {% if pet.photo_url %}
+          <a href="/{{ pet.id }}">
+            <img src="{{ pet.photo_url }}" alt="{{ pet.name }}"
+                class="img-thumbnail">
+          </a>
+          {% endif %}
+          <p>
+            <a href="/{{ pet.id }}"
+              class="link-info text-decoration-none">{{ pet.name }}
+            </a>
+          <b>is {% if not pet.available %} not {% endif %} available!</b></p>
+        </div>
+    {% endfor %}
   </div>
   <form action="/add">
     <button class="btn btn-info">Add a Pet</button>
