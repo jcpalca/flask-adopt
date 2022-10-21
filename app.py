@@ -30,6 +30,7 @@ toolbar = DebugToolbarExtension(app)
 @app.get("/")
 def pet_list():
     """ Shows all pets and renders html """
+
     pets = Pet.query.order_by(Pet.available.desc()).all()
 
     return render_template("pet_list.html", pets=pets)
@@ -49,7 +50,7 @@ def pet_add():
     if form.validate_on_submit():
         name = form.name.data
         species = form.species.data
-        photo_url = form.photo_url.data
+        photo_url = form.photo_url.data or None
         age = form.age.data
         notes = form.notes.data or None
 
@@ -86,7 +87,7 @@ def pet_display_edit(pet_id):
 
     if form.validate_on_submit():
         pet.photo_url = form.photo_url.data
-        pet.notes = form.notes.data or None
+        pet.notes = form.notes.data
         pet.available = form.available.data
 
         db.session.commit()
