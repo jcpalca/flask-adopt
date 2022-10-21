@@ -12,7 +12,7 @@
     </div>
     {% if pet.photo_url %}
     <div class="col">
-        <img src="{{ pet.photo_url }}" alt="{{ pet.name }}" class="img-thumbnail">
+      <img src="{{ pet.photo_url }}" alt="{{ pet.name }}" class="img-thumbnail">
     </div>
     {% endif %}
   </div>
@@ -46,7 +46,7 @@
 
     {% endfor %}
 
-    <button type="submit">Submit</button>
+    <button type="submit" class="btn btn-info">Submit</button>
   </form>
 </div>
 {% endblock %}
