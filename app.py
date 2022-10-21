@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from models import db, connect_db, Pet
 
-from forms import AddPetForm
+from forms import AddPetForm, EditPetForm
 
 app = Flask(__name__)
 
@@ -23,20 +23,26 @@ db.create_all()
 # Having the Debug Toolbar show redirects explicitly is often useful;
 # however, if you want to turn it off, you can uncomment this line:
 #
-# app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 toolbar = DebugToolbarExtension(app)
 
 @app.get("/")
 def pet_list():
     """ Shows all pets and renders html """
-    pets = Pet.query.all()
+    pets = Pet.query.order_by(Pet.available.desc()).all()
 
     return render_template("pet_list.html", pets=pets)
 
 @app.route("/add", methods=["GET", "POST"])
 def pet_add():
-    """ Pet add form; handle adding """
+    """
+    Display pet add form; handle adding
+
+    If form data is valid, add data into database and redirect to root
+
+    Otherwise, rerender page with form data already inputted
+    """
 
     form = AddPetForm()
 
@@ -65,9 +71,14 @@ def pet_add():
 @app.route("/<int:pet_id>", methods=["GET", "POST"])
 def pet_display_edit(pet_id):
     """
-    Display pet details
+    Display pet details and pet edit form; handle editing
 
-    Pet edit form; handle editing
+    Takes in pet_id(int)
+    and checks if pet_id is valid, else responds with a 404 error.
+
+    If form data is valid, edit data from database and redirect to /<pet_id>
+
+    Otherwise, rerender page with form data already inputted
     """
 
     pet = Pet.query.get_or_404(pet_id)
