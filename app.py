@@ -1,12 +1,18 @@
 """Flask app for adopt app."""
 
 from flask import Flask, render_template, redirect, flash
-
 from flask_debugtoolbar import DebugToolbarExtension
-
 from models import db, connect_db, Pet
-
 from forms import AddPetForm, EditPetForm
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+PETFINDER_API_KEY = os.environ['PETFINDER_API_KEY']
+PETFINDER_SECRET_KEY = os.environ['PETFINDER_SECRET_KEY']
+
 
 app = Flask(__name__)
 
