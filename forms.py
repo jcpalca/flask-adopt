@@ -2,7 +2,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, BooleanField
-from wtforms.validators import InputRequired, Optional, Email, URL
+from wtforms.validators import InputRequired, Optional, URL
 
 
 class AddPetForm(FlaskForm):
@@ -32,6 +32,6 @@ class AddPetForm(FlaskForm):
 class EditPetForm(FlaskForm):
     """Form for editing pets"""
 
-    photo_url = StringField("Photo URL", validators=[Optional(), URL()])
+    photo_url = StringField("Photo URL", validators=[InputRequired(), URL()])
     notes = TextAreaField('Notes', validators=[Optional()])
     available = BooleanField('Available')
