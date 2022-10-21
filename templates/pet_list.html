@@ -2,13 +2,20 @@
 {% block title %} Pet List {% endblock %}
 
 {% block content %}
+<h1 class="text-center mt-5">Here are our pets!</h1>
 
-<div class="container">
+<div class="container mt-5">
   <div class="row">
 {% for pet in pets %}
     <div class="col-4">
-      <img src="{{ pet.photo_url }}" alt="{{ pet.name }}" class="img-fluid">
-      <p>{{ pet.name }}
+      <a href="/{{ pet.id }}">
+        <img src="{{ pet.photo_url }}" alt="{{ pet.name }}"
+             class="img-thumbnail">
+      </a>
+      <p>
+        <a href="/{{ pet.id }}"
+           class="link-info text-decoration-none">{{ pet.name }}
+        </a>
       <b>is {% if not pet.available %} not {% endif %} available!</b></p>
     </div>
 {% endfor %}
