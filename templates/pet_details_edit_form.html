@@ -1,8 +1,28 @@
 {% extends "base.html" %}
-{% block title %} pet.name {% endblock %}
+{% block title %} {{ pet.name }} {% endblock %}
 
 {% block content %}
-<h1 class="text-center mt-5">Add new pet</h1>
+
+<div class="container w-50 mt-5">
+  <div class="row">
+    <div class="col">
+      <h3 class="text-center mt-5">{{ pet.name }}</h3>
+      <p class="text-center">Age: {{ pet.age }}</p>
+      <p class="text-center">Species: {{ pet.species }}</p>
+    </div>
+    {% if pet.photo_url %}
+    <div class="col">
+        <img src="{{ pet.photo_url }}" alt="{{ pet.name }}" class="img-thumbnail">
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% for msg in get_flashed_messages() %}
+<div class="container w-25 mt-5">
+  <p class="alert alert-success text-center"> {{ msg }}</p>
+</div>
+{% endfor %}
 
 <div class="container w-50 mt-5">
   <form id="pet-add-form" method="POST" class="form-group">
@@ -13,7 +33,11 @@
 
       <p>
         {{ field.label }}
-        {{ field (class_="form-control")}}
+        {% if field.id != "available" %} <!--different styling for checkbox -->
+          {{ field (class_="form-control")}}
+        {% else %}
+          {{ field }}
+        {% endif %}
 
         {% for error in field.errors %}
           {{ error }}
