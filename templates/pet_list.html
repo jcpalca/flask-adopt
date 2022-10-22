@@ -27,5 +27,20 @@
   </form>
 </div>
 
+<hr>
+
+<h2 class="text-center mt-5">Random Petfinder Pet</h2>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-4">
+      <img src="{{ petfinder_pet['picture'] }}"
+           alt="{{ petfinder_pet['name'] }}"
+           class="img-thumbnail">
+      <p class="text-center">This is {{ petfinder_pet['name'] }}!</p>
+      <p class="text-center">Age: {{ petfinder_pet['age'] }}</p>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
