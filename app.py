@@ -4,15 +4,17 @@ from flask import Flask, render_template, redirect, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, Pet
 from forms import AddPetForm, EditPetForm
-
+import requests
 import os
 from dotenv import load_dotenv
+from random import choice
 
 load_dotenv()
 
 PETFINDER_API_KEY = os.environ['PETFINDER_API_KEY']
 PETFINDER_SECRET_KEY = os.environ['PETFINDER_SECRET_KEY']
-
+BASE_URL = 'https://api.petfinder.com/v2/animals'
+AUTH_URL = 'https://api.petfinder.com/v2/oauth2/token'
 
 app = Flask(__name__)
 
@@ -103,3 +105,55 @@ def pet_display_edit(pet_id):
 
     else:
         return render_template('pet_details_edit_form.html', form=form, pet=pet)
+
+def authenticate_pet_api():
+    """ Authenticating with the API to get an Oauth token
+    Input: None
+    Output: Oauth Token (string)
+    """
+    response = requests.post(
+      AUTH_URL,
+      data={
+        'grant_type': 'client_credentials',
+        'client_id': PETFINDER_API_KEY,
+        'client_secret': PETFINDER_SECRET_KEY
+      }
+    )
+
+    return response.json()['access_token']
+
+def get_pets_api(token):
+    """ Makes GET request to /animals/url to find a random pet
+    Input: token (string)
+    Output: Pets (list of dictionaries containing pet info)"""
+
+    response = requests.get(
+        BASE_URL,
+        params={
+          'limit': 100
+        },
+        headers={
+          "Authorization": f"Bearer {token}"
+        }
+    )
+
+    return response['animals']
+
+def get_random_pet(pets):
+    """ Returns a random pet with valid photo
+    Input: pets (list of pets)
+    Output: pet_info (dictionary)
+    """
+
+    pets_with_photo = [pet for pet in pets if pet['primary_photo_cropped']]
+    chosen_pet = choice(pets_with_photo)
+    pet_info = {
+      'name': chosen_pet['name'],
+      'age': chosen_pet['age'],
+      'picture': chosen_pet['primary_photo_cropped']
+    }
+
+    return pet_info
+
+# oauth = authenticate_pet_api()
+# get_pets_api(oauth)
